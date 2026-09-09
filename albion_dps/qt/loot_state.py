@@ -1000,7 +1000,7 @@ class LootState(QObject):
             return
         rows = records if isinstance(records, list) else []
         index = {
-            (
+            _quote_key(
                 str(row.get("item_id") or ""),
                 str(row.get("city") or ""),
                 int(row.get("quality") or 1),
@@ -1014,7 +1014,7 @@ class LootState(QObject):
             if not item_id or bool(row.get("is_silver")):
                 continue
             quality = int(row.get("quality") or 1)
-            quote = index.get((item_id, self._price_city, quality))
+            quote = index.get(_quote_key(item_id, self._price_city, quality))
             if quote is None:
                 continue
             self._session_store.upsert_valuation(
@@ -1261,6 +1261,10 @@ class LootState(QObject):
                     root.destroy()
                 except Exception:
                     pass
+
+
+def _quote_key(item_id: str, city: str, quality: int) -> tuple[str, str, int]:
+    return (item_id, city.casefold(), quality)
 
 
 def _tk_filetypes(file_filter: str) -> list[tuple[str, str]]:
