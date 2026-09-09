@@ -73,6 +73,7 @@ fi
 
 BUILD_PROPS=()
 OBJ_DIR="$REPO_ROOT/tools/extract_items/obj"
+mkdir -p "$OBJ_DIR" 2>/dev/null || true
 if [[ ! -w "$OBJ_DIR" ]]; then
   INTERMEDIATE_ROOT="${EXTRACT_ITEMS_INTERMEDIATE:-/tmp/extract_items_obj}"
   OUTPUT_ROOT="${EXTRACT_ITEMS_OUTPUT:-/tmp/extract_items_bin}"
