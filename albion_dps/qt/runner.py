@@ -29,7 +29,7 @@ from albion_dps.domain import (
     SessionActivityEvent,
     load_item_resolver,
 )
-from albion_dps.domain.item_db import ensure_game_databases
+from albion_dps.domain.item_db import DATA_DIR, ensure_game_databases
 from albion_dps.domain.loot_session_store import LootSessionStore
 from albion_dps.domain.map_resolver import load_map_resolver
 from albion_dps.market.local_ingest import MarketWebSocketIngestor
@@ -191,11 +191,11 @@ def run_qt(args: argparse.Namespace) -> int:
     state.updateAutoCheckToggled.connect(_save_update_preference)
     state.manualUpdateCheckRequested.connect(lambda: _start_update_check(update_notifier))
     scanner_state = ScannerState(app_mode=args.qt_command)
-    market_cache_path = Path("data") / "market_cache.sqlite3"
+    market_cache_path = DATA_DIR / "market_cache.sqlite3"
     market_cache_path.parent.mkdir(parents=True, exist_ok=True)
-    market_price_store = LocalMarketPriceStore(Path("data") / "market_prices.sqlite3")
+    market_price_store = LocalMarketPriceStore(DATA_DIR / "market_prices.sqlite3")
     market_price_store.clear_old_quotes()
-    local_market_store = LocalMarketStore(Path("data") / "local_market.sqlite3")
+    local_market_store = LocalMarketStore(DATA_DIR / "local_market.sqlite3")
     local_market_ingestor = MarketWebSocketIngestor(
         store=local_market_store,
         logger=logging.getLogger(__name__),
@@ -222,7 +222,7 @@ def run_qt(args: argparse.Namespace) -> int:
         logger=logging.getLogger(__name__),
     )
     app_settings = load_app_settings()
-    loot_session_store = LootSessionStore(Path("data") / "loot_sessions.sqlite3")
+    loot_session_store = LootSessionStore(DATA_DIR / "loot_sessions.sqlite3")
     loot_state = LootState(
         history_limit=max(args.history, LOOT_HISTORY_LIMIT),
         session_store=loot_session_store,
